@@ -1,50 +1,62 @@
-
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
 import fs from "fs";
 import path from "path";
-import { OpenAI } from "openai";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// Middleware
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
 
-const dbPath = './data/properties.json';
-const getDB = () => JSON.parse(fs.readFileSync(dbPath, 'utf8'));
-
-// Sayfalar
-app.get("/", (req, res) => res.render('index', { properties: getDB() }));
-
-// ANALİZ MOTORU (PRO SÜRÜM)
-app.post("/api/analyze", async (req, res) => {
-    const { id, customText } = req.body;
-    const listings = getDB();
-    const target = id ? listings.find(l => l.id == id) : customText;
-
-    if (!target) return res.json({ error: "İlan bulunamadı." });
-
+// Veritabanını Oku (JSON)
+const getDB = () => {
     try {
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                { role: "system", content: "Sen EmlakIQ PRO Analizcisin. İlanın; + ve - yönlerini, yatırım riskini, kira getiri potansiyelini, bölge fiyatlarına göre uygunluk (Ideal/Pahalı/Fırsat) durumunu raporla. Yanıtın güven vermeli." },
-                { role: "user", content: `Analiz et: ${JSON.stringify(target)}` }
-            ],
-            temperature: 0.3
-        });
-        res.json({ result: completion.choices[0].message.content });
-    } catch (e) { res.status(500).json({ error: "AI Analiz hatası." }); }
+        const data = fs.readFileSync("./data/properties.json", "utf8");
+        return JSON.parse(data);
+    } catch (err) {
+        console.error("Veritabanı okuma hatası:", err);
+        return [];
+    }
+};
+
+// --- ROUTES ---
+
+// 1. Anasayfa (İlan Listesi)
+app.get("/", (req, res) => {
+    const properties = getDB();
+    res.render("index", { properties });
 });
 
-// Auth Taslakları (Sonraki geliştirme için hazır)
-app.post("/api/auth/register", (req, res) => res.json({ msg: "Kayıt sistemi backend kontrolünde hazırlanıyor." }));
-app.post("/api/auth/2fa-setup", (req, res) => res.json({ msg: "2FA Güvenlik katmanı hazır." }));
+// 2. İlan Detay Sayfası (Yeni!)
+app.get("/property/:id", (req, res) => {
+    const properties = getDB();
+    const property = properties.find(p => p.id == req.params.id);
+    
+    if (!property) {
+        return res.status(404).send("İlan bulunamadı.");
+    }
+    
+    res.render("detail", { property });
+});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`EmlakIQ PRO V3 Yayında: http://localhost:${PORT}`));
+// 3. AI Analiz Merkezi
+app.get("/ai-analyzer", (req, res) => {
+    res.render("analyzer"); // analyzer.ejs dosyasını oluşturmalısın
+});
+
+// 4. Auth (Giriş/Kaydol)
+app.get("/auth", (req, res) => {
+    res.render("auth"); // auth.ejs dosyasını oluşturmalısın
+});
+
+// Sunucuyu Başlat
+app.listen(PORT, () => {
+    console.log(`EmlakIQ PRO Sunucusu Çalışıyor: http://localhost:${PORT}`);
+});
