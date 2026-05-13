@@ -1,0 +1,1 @@
+{"name":"emlakiq-ultimate","type":"module","dependencies":{"express":"^4.19.2","dotenv":"^16.4.5","cors":"^2.8.5","openai":"^4.47.1","ejs":"^3.1.10"}}
