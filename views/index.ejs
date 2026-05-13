@@ -1,109 +1,86 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>EmlakIQ PRO | Akıllı Gayrimenkul Merkezi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmlakIQ PRO | Global Real Estate Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #1E293B; --accent: #10B981; --happy: #F0FDFA; --text: #334155; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; margin: 0; color: var(--text); }
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: sticky; top:0; z-index:100; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
-        .logo span { color: var(--accent); }
+        :root { --navy: #0F172A; --gold: #B48C48; --border: #E2E8F0; --bg: #FDFDFD; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--navy); display: flex; }
         
-        .hero { background: var(--happy); padding: 60px 5%; text-align: center; border-bottom: 1px solid #E2E8F0; }
-        .search-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; gap: 10px; max-width: 1000px; margin: -40px auto 0; border: 1px solid #E2E8F0; }
-        .search-container input, .search-container select { border: 1px solid #E2E8F0; padding: 12px; border-radius: 10px; flex: 1; outline: none; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-        
-        .container { padding: 60px 5%; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
-        .card { background: white; border-radius: 24px; overflow: hidden; transition: 0.3s; border: 1px solid #F1F5F9; position: relative; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-        .card img { width: 100%; height: 230px; object-fit: cover; }
-        .card-content { padding: 25px; }
-        .price { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
-        .badge { position: absolute; top: 20px; left: 20px; background: var(--accent); color: white; padding: 5px 15px; border-radius: 50px; font-weight: 600; font-size: 12px; }
-        
-        .btn-ai { background: var(--happy); color: var(--accent); border: 2px solid var(--accent); padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 15px; transition: 0.3s; }
-        .btn-ai:hover { background: var(--accent); color: white; }
+        /* Minimalist Sidebar */
+        .sidebar { width: 70px; height: 100vh; background: var(--navy); position: fixed; transition: 0.3s ease; z-index: 1000; overflow: hidden; }
+        .sidebar:hover { width: 260px; }
+        .nav-link { padding: 20px 25px; display: flex; align-items: center; color: #94A3B8; text-decoration: none; border-left: 3px solid transparent; }
+        .nav-link:hover { background: #1E293B; color: white; border-left-color: var(--gold); }
+        .nav-link i { min-width: 30px; font-size: 18px; margin-right: 20px; }
+        .nav-link span { opacity: 0; font-size: 13px; font-weight: 500; letter-spacing: 1px; transition: 0.2s; white-space: nowrap; }
+        .sidebar:hover .nav-link span { opacity: 1; }
 
-        /* Modal */
-        #modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-body { background: white; padding: 40px; border-radius: 30px; max-width: 700px; width: 100%; max-height: 80vh; overflow-y: auto; }
+        /* Main Context */
+        .main { margin-left: 70px; width: 100%; }
+        .header { padding: 50px 60px 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .title { font-family: 'Playfair Display', serif; font-size: 36px; margin: 0; font-weight: 700; }
+        
+        /* Professional Filters */
+        .filter-bar { margin: 20px 60px 40px; display: flex; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+        .f-select { border: 1px solid var(--border); padding: 10px 15px; border-radius: 2px; font-size: 12px; font-weight: 600; color: var(--navy); cursor: pointer; background: white; outline: none; }
+        .f-select:hover { border-color: var(--gold); }
+
+        /* Property Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 40px; padding: 0 60px 60px; }
+        .card { background: white; border: 1px solid var(--border); border-radius: 0; transition: 0.4s; cursor: pointer; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .card-img { width: 100%; height: 280px; object-fit: cover; }
+        .card-body { padding: 25px; }
+        .status-tag { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        .card-title { font-size: 20px; font-weight: 500; margin: 10px 0; letter-spacing: -0.5px; }
+        .card-price { font-size: 22px; font-weight: 400; color: var(--navy); margin-top: 15px; border-top: 1px solid #F1F5F9; padding-top: 15px; }
+
+        .btn-cta { background: var(--navy); color: white; padding: 12px 25px; border-radius: 2px; text-decoration: none; font-size: 12px; font-weight: 600; letter-spacing: 1px; border: 1px solid var(--navy); transition: 0.3s; }
+        .btn-cta:hover { background: transparent; color: var(--navy); }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">Emlak<span>IQ PRO</span></div>
-        <div>
-            <button class="btn-main" style="background:none; color:var(--primary)">Favorilerim</button>
-            <button class="btn-main" onclick="alert('Bakend hazırlığı yapıldı, kayıt sistemi yakında aktif.')">Giriş Yap</button>
-        </div>
+
+    <nav class="sidebar">
+        <div style="padding: 25px; color: var(--gold); font-weight: 800; font-size: 22px;">IQ</div>
+        <a href="/" class="nav-link"><i class="fas fa-layer-group"></i> <span>PORTFÖY</span></a>
+        <a href="/ai-analyzer" class="nav-link"><i class="fas fa-microchip"></i> <span>ANALİZ MERKEZİ</span></a>
+        <a href="/auth" class="nav-link"><i class="fas fa-lock"></i> <span>GÜVENLİ ERİŞİM</span></a>
     </nav>
 
-    <div class="hero">
-        <h1 style="font-size: 40px; margin-bottom: 10px;">Aradığınız Güvenli Yuvayı Analiz Ederek Bulun</h1>
-        <p style="color: #64748b;">Yapay Zeka ile %100 Doğru Yatırım, Minimum Risk.</p>
-    </div>
+    <div class="main">
+        <div class="header">
+            <div>
+                <p style="color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: 3px; margin-bottom: 10px;">KURUMSAL GAYRİMENKUL ANALİZİ</p>
+                <h1 class="title">Seçkin Portföy</h1>
+            </div>
+            <a href="#" class="btn-cta">VARLIK YÖNETİMİ</a>
+        </div>
 
-    <div class="search-container">
-        <input type="text" id="listingIdInput" placeholder="İlan Numarası (Örn: 101)">
-        <select id="cityFilter">
-            <option value="">Tüm Şehirler</option>
-            <option>İstanbul</option><option>Ankara</option><option>İzmir</option>
-        </select>
-        <select id="catFilter">
-            <option value="">Tüm Kategoriler</option>
-            <option>Daire</option><option>Arsa</option><option>Villa</option><option>Ofis</option>
-        </select>
-        <button class="btn-main" onclick="searchById()">İlanı Analiz Et</button>
-    </div>
+        <div class="filter-bar">
+            <select class="f-select"><option>LOKASYON: TÜMÜ</option></select>
+            <select class="f-select"><option>TİP: KONUT & TİCARİ</option></select>
+            <select class="f-select"><option>DURUM: SATILIK</option></select>
+        </div>
 
-    <div class="container">
-        <div class="grid" id="listingGrid">
+        <div class="grid">
             <% properties.forEach(p => { %>
-                <div class="card" data-city="<%= p.city %>" data-cat="<%= p.cat %>">
-                    <img src="<%= p.img %>">
-                    <div class="badge"><%= p.city %> | <%= p.type %></div>
-                    <div class="card-content">
-                        <div class="price"><%= p.price %> ₺</div>
-                        <h3 style="font-size: 18px; margin: 0 0 10px 0;"><%= p.title %></h3>
-                        <p style="font-size: 14px; color: #64748b;"><%= p.details %></p>
-                        <button class="btn-ai" onclick="analyze('<%= p.id %>')">PRO Analiz Raporu</button>
+                <div class="card" onclick="location.href='/property/<%= p.id %>'">
+                    <img src="<%= p.img %>" class="card-img">
+                    <div class="card-body">
+                        <span class="status-tag">● STRATEJİK YATIRIM</span>
+                        <h3 class="card-title"><%= p.title %></h3>
+                        <p style="color: #64748B; font-size: 13px;"><%= p.city %>, TR</p>
+                        <div class="card-price"><%= p.price %> ₺</div>
                     </div>
                 </div>
             <% }) %>
         </div>
     </div>
 
-    <div id="modal"><div class="modal-body">
-        <h2 id="mTitle">Analiz Raporu</h2>
-        <div id="mContent" style="line-height: 1.6; white-space: pre-wrap;"></div>
-        <button class="btn-main" style="margin-top:20px; width:100%" onclick="document.getElementById('modal').style.display='none'">Kapat</button>
-    </div></div>
-
-    <script>
-        async function analyze(id) {
-            const m = document.getElementById('modal');
-            const c = document.getElementById('mContent');
-            m.style.display = 'flex';
-            c.innerText = "Yapay Zeka emlak piyasasını ve bölge verilerini sorguluyor...";
-            
-            const res = await fetch('/api/analyze', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id })
-            });
-            const data = await res.json();
-            c.innerText = data.result || data.error;
-        }
-
-        function searchById() {
-            const id = document.getElementById('listingIdInput').value;
-            if(id) analyze(id);
-        }
-    </script>
 </body>
 </html>
